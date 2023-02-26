@@ -20,6 +20,9 @@ namespace FrameworkDesign.Example
         public BindableProperty<int> BestScore { get; } = new BindableProperty<int>() {Value = 0};
         protected override void OnInit()
         {
+            var storage = this.GetUtility<IStorage>();
+            BestScore.Value = storage.LoadInt(nameof(BestScore), 0);
+            BestScore.OnValueChanged += (v) => storage.SaveInt(nameof(BestScore), v);
         }
     }
 }

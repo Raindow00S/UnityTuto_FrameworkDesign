@@ -22,7 +22,7 @@ namespace FrameworkDesign.Example
         {
             var storage = this.GetUtility<IStorage>();
             BestScore.Value = storage.LoadInt(nameof(BestScore), 0);
-            BestScore.OnValueChanged += (v) => storage.SaveInt(nameof(BestScore), v);
+            BestScore.RegisterOnValueChanged((v) => storage.SaveInt(nameof(BestScore), v));
         }
     }
 }

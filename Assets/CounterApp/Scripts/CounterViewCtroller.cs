@@ -14,8 +14,8 @@ namespace CounterApp
             // 会造成循环调用堆栈溢出
             // mCounterModel = CounterApp.Get<ICounterModel>();
             mCounterModel = this.GetModel<ICounterModel>();
-            
-            mCounterModel.Count.OnValueChanged += OnCountChanged;
+
+            mCounterModel.Count.RegisterOnValueChanged(OnCountChanged);
 
             transform.Find("BtnAdd").GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -39,7 +39,7 @@ namespace CounterApp
 
         private void OnDestroy()
         {
-            mCounterModel.Count.OnValueChanged -= OnCountChanged;
+            mCounterModel.Count.UnRegisterOnValueChanged(OnCountChanged);
             mCounterModel = null;
         }
 
@@ -64,10 +64,10 @@ namespace CounterApp
             var storage = this.GetUtility<IStorage>();
             
             Count.Value = storage.LoadInt("COUNTER_COUNT", 0);
-            Count.OnValueChanged += count =>
+            Count.RegisterOnValueChanged(count =>
             {
                 storage.SaveInt("COUNTER_COUNT", count);
-            };
+            });
         }
 
         // public CounterModel()

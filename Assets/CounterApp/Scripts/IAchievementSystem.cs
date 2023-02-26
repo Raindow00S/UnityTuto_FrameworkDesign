@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FrameworkDesign;
+using FrameworkDesign.Example;
 using UnityEngine;
 
 namespace CounterApp
@@ -7,7 +11,7 @@ namespace CounterApp
     {
         
     }
-    
+
     public class AchievementSystem : AbstractSystem, IAchievementSystem
     {
         protected override void OnInit()
@@ -24,7 +28,6 @@ namespace CounterApp
                 {
                     Debug.Log("成就：点上20！");
                 }
-
                 previousCount = newCount;
             });
         }

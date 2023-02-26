@@ -8,11 +8,19 @@ namespace FrameworkDesign.Example
         private void Start()
         {
             this.RegisterEvent<GamePassEvent>(OnGamePass);
+            this.RegisterEvent<OnCountDownEndEvent>(OnGameOver).UnRegisterWhenGameObjectDestroyed(gameObject);
         }
 
         private void OnGamePass(GamePassEvent e)
         {
+            transform.Find("Canvas/GamePanel").gameObject.SetActive(false);
             transform.Find("Canvas/GamePassPanel").gameObject.SetActive(true);
+        }
+
+        private void OnGameOver(OnCountDownEndEvent e)
+        {
+            transform.Find("Canvas/GamePanel").gameObject.SetActive(false);
+            transform.Find("Canvas/GameOverPanel").gameObject.SetActive(true);
         }
 
         private void OnDestroy()

@@ -4,7 +4,15 @@ namespace FrameworkDesign.Example
     {
         protected override void OnExecute()
         {
-            this.SendEvent<OnMissEvent>();
+            var gameModel = this.GetModel<IGameModel>();
+            if (gameModel.Life.Value > 0)
+            {
+                gameModel.Life.Value--; // 生命值可以抵消点错
+            }
+            else
+            {
+                this.SendEvent<OnMissEvent>();
+            }
         }
     }
 }

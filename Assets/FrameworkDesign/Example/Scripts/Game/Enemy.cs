@@ -10,10 +10,9 @@ namespace FrameworkDesign.Example
     {
         public void OnMouseDown()
         {
-            
+            gameObject.SetActive(false);
             // new KillEnemyCommand().Execute();
             this.SendCommand<KillEnemyCommand>();
-            Destroy(gameObject);
         }
 
         IArchitecture IBelongToArchitecture.GetArchitecture()

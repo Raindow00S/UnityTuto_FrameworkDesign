@@ -1,6 +1,7 @@
 using System;
 using FrameworkDesign;
 using FrameworkDesign.Example;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,8 @@ namespace FrameworkDesign.Example
 {
     public class GameStartPanel : MonoBehaviour, IController
     {
-        // public GameObject enemies;   // *这里对敌人节点的直接引用，加入事件以后就不需要了
+        private IGameModel mGameModel;
+        private bool mInited;
 
         private void Start()
         {
@@ -20,6 +22,53 @@ namespace FrameworkDesign.Example
                 // new StartGameCommand().Execute();
             });
             
+            transform.Find("TopRoot/BtnBuyLife").GetComponent<Button>().onClick.AddListener(() =>
+            {
+                this.SendCommand<BuyLifeCommand>();
+            });
+
+            mGameModel = this.GetModel<IGameModel>();
+            mGameModel.Gold.RegisterOnValueChanged(OnGoldValueChanged);
+            mGameModel.Life.RegisterOnValueChanged(OnLifeValueChanged);
+            
+            // 第一次手动初始化，OnEnable先于Start执行
+            OnGoldValueChanged(mGameModel.Gold.Value);
+            OnLifeValueChanged(mGameModel.Life.Value);
+
+            transform.Find("TopRoot/BestScoreText").GetComponent<TextMeshProUGUI>().text =
+                $"Best Score: {mGameModel.BestScore.Value}";
+
+            mInited = true;
+        }
+
+        private void OnEnable()
+        {
+            if (!mInited) return;
+
+            // 一些没注册事件，但需要每次显示前都刷新以下的值
+            transform.Find("TopRoot/BestScoreText").GetComponent<TextMeshProUGUI>().text =
+                $"Best Score: {mGameModel.BestScore.Value}";
+        }
+
+        void OnGoldValueChanged(int gold)
+        {
+            if(gold > 0)
+                transform.Find("TopRoot/BtnBuyLife").gameObject.SetActive(true);
+            else
+                transform.Find("TopRoot/BtnBuyLife").gameObject.SetActive(false);
+            transform.Find("TopRoot/GoldText").GetComponent<TextMeshProUGUI>().text = $"Gold: {gold}";
+        }
+
+        void OnLifeValueChanged(int life)
+        {
+            transform.Find("TopRoot/LifeText").GetComponent<TextMeshProUGUI>().text = $"Life: {life}";
+        }
+
+        private void OnDestroy()
+        {
+            mGameModel.Gold.UnRegisterOnValueChanged(OnGoldValueChanged);
+            mGameModel.Life.UnRegisterOnValueChanged(OnLifeValueChanged);
+            mGameModel = null;
         }
 
         IArchitecture IBelongToArchitecture.GetArchitecture()

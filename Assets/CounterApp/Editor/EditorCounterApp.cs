@@ -36,7 +36,7 @@ namespace CounterApp.Editor
                 // new AddCountCommand().Execute();
             }
 
-            GUILayout.Label(CounterApp.Get<ICounterModel>().Count.Value.ToString());
+            GUILayout.Label(CounterApp.Interface.GetModel<ICounterModel>().Count.Value.ToString());
             
             if (GUILayout.Button("-"))
             {
